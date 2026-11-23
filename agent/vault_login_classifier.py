@@ -581,14 +581,31 @@ __OPTION_MATCH__
   const international = (v) => /^\s*\(?\s*\+/.test(v);
   // A + belongs to a number only as its leading character: one anywhere else is not formatting.
   const plusOnlyLeads = (v) => (v.match(/\+/g) || []).length === (international(v) ? 1 : 0);
+  // A page may ADD or DROP the dialling code the saved number did not/does carry: a cabinet stores
+  // "(952) 202-30-76" and its mask shows "+7 (952) 202-30-76"; a demo stores "+7 999 123-45-67" and
+  // its mask drops the code, showing "999 123 4567". Both are the same subscriber number, so one side
+  // may carry up to five leading digits the other does not — a country code, with or without the "00"
+  // carrier prefix. Only the LEADING digits may differ: a digit lost, added or changed inside the
+  // number still reads as reverted, which is what this check is for.
+  const leadingCodeOnly = (want, shown) => {
+    const w = digits(want), s = digits(shown);
+    if (!w || !s || w === s) return false;
+    const [longer, shorter] = w.length > s.length ? [w, s] : [s, w];
+    const extra = longer.length - shorter.length;
+    if (extra > 5) return false;
+    return longer.endsWith(shorter) && /^(00)?\d{1,3}$/.test(longer.slice(0, extra));
+  };
   // Per token: when a display mask's rewrite still says the same thing.
   const sameMeaning = {
     "cc-number": sameDigits,
     "postal-code": sameDigits,
     // The + is part of the number: 15551234567 dials somewhere else than +15551234567. A mask may
     // put the country code in parentheses, "(+48) 600 ...", so the + may follow one "(".
+    // The question is whether the page kept the NUMBER, not whether it kept the punctuation: a mask
+    // may add a "+" and a dialling code the saved value never had, or drop the code it did have.
+    // Digits decide, plus a guard that any "+" is a leading one and nothing else.
     "tel": (want, shown) => plusOnlyLeads(want) && plusOnlyLeads(shown)
-      && international(want) === international(shown) && sameDigits(want, shown),
+      && (sameDigits(want, shown) || leadingCodeOnly(want, shown)),
     // Month and year stay two numbers (1/203 is not 12/03); a mask may drop the month's leading
     // zero (7/29) or the separator (0729), never move a digit across it.
     "cc-exp": (want, shown) => {

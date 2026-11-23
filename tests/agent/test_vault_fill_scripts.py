@@ -244,6 +244,14 @@ class TestReadBack:
         ("cc-exp", "07/29", "7/29"),                          # month 07 shown as 7: the same month
         ("cc-exp", "07/29", "0729"),                          # separator dropped, groups intact
         ("tel", "+48 600 100 200", "(+48) 600 100 200"),      # the country code in parentheses
+        # the page ADDS the code the saved number left out (a cabinet stores "(952) 202-30-76")
+        ("tel", "(952) 202-30-76", "+7 (952) 202-30-76"),
+        ("tel", "9522023076", "7 952 202 30 76"),
+        # the mirror case: the mask DROPS the dialling code, the subscriber number is unchanged
+        ("tel", "+15551234567", "(555) 123-4567"),
+        ("tel", "+15551234567", "15551234567"),
+        ("tel", "+48 600 100 200", "48600100200"),
+        ("tel", "48600100200", "(+48) 600 100 200"),
     ])
     def test_a_mask_that_only_reformats_digits_is_landed(self, token, value, shown):
         setup = f'stamp(add(document, "input", {{ type: "text", value: {json.dumps(shown)} }}), 0);'
@@ -252,17 +260,21 @@ class TestReadBack:
 
     @pytest.mark.parametrize(("token", "value", "shown"), [
         ("cc-number", "4111111111111111", "4111 1111 1111 111"),   # a digit lost
-        ("tel", "+15551234567", "(555) 123-4567"),                 # the country code dropped
-        ("tel", "+15551234567", "15551234567"),                    # only the + dropped: another number
-        ("tel", "+48 600 100 200", "48600100200"),
         ("cc-exp", "12/03", "1/203"),                              # same digits, other month and year
         ("cc-exp", "07/29", "07/2029"),
         ("cc-exp", "07/29", "0730"),                               # separator dropped, another year
-        ("tel", "48600100200", "(+48) 600 100 200"),               # a + the value never had
         ("tel", "+48 600 100 200", "((+48) 600 100 200"),         # the + leads after one "(" at most
         ("tel", "+48 600 100 200", "48 600 +100 200"),            # a + that no longer leads
         ("tel", "48600100200", "4860010020+0"),                   # a + anywhere but the front
         ("tel", "user@example.com", ""),                           # not a number: exact only
+        # only LEADING digits may differ: a digit lost inside the number is still a revert
+        ("tel", "(952) 202-30-76", "+7 (952) 20-30-76"),           # a digit dropped
+        # a UK number written 020 ... and shown as +44 20 ... lost its trunk zero, which is a
+        # digit missing inside the number, not a dialling-code difference
+        ("tel", "020 7946 0958", "0044 20 7946 0958"),
+        ("tel", "(952) 202-30-76", "+7 952 202"),                  # digits truncated
+        ("tel", "9522023076", "1234567 952 202 30 76"),            # prefix too long to be a code
+        ("tel", "9522023076", "7 952 203 30 76"),                  # one digit changed
         ("current-password", "12 34", "1234"),                     # passwords stay exact
         ("username", "a-b", "ab"),
     ])
