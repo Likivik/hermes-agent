@@ -206,6 +206,31 @@ class TestFocusAssertion:
 
 
 class TestReadBack:
+    def test_the_counts_are_the_digits_the_field_kept_not_the_ones_it_shows(self):
+        """A mask adds a country code that was never typed: the field shows 11 digits and the value
+        has 13, but only 10 came from the value."""
+        setup = """
+          const el = stamp(add(document, "input", { type: "tel", value: "+7 (795) 220-23-07" }), 0);
+          el.getClientRects = () => [1];
+        """
+        js = build_fill_verify_js([{"index": 0, "token": "tel", "value": "7952202307612"}],
+                                  nonce=NONCE, expected_origin=ORIGIN)
+        out = _run(setup, js)
+        assert out["counts"] == [{"index": 0, "typed": 13, "held": 18, "typed_digits": 13,
+                                  "held_digits": 11, "kept": 10, "kept_digits": 10}]
+
+    def test_one_lost_digit_does_not_fail_every_digit_after_it(self):
+        """The measure is a subsequence, not a walk that dies at the first miss. Here the value
+        starts with a digit the field never shows, and 10 of its digits survive all the same."""
+        setup = """
+          const el = stamp(add(document, "input", { type: "tel", value: "+7 (952) 202-30-76" }), 0);
+          el.getClientRects = () => [1];
+        """
+        js = build_fill_verify_js([{"index": 0, "token": "tel", "value": "8952202307612"}],
+                                  nonce=NONCE, expected_origin=ORIGIN)
+        out = _run(setup, js)
+        assert out["counts"][0]["kept_digits"] == 10
+
     def test_a_select_holding_another_option_is_not_landed(self):
         """The read-back is the claim that the page kept the value: a select on the wrong option
         did not keep it."""
@@ -213,7 +238,7 @@ class TestReadBack:
           stamp(select(document, [["US", "United States"], ["CA", "Canada"]], 1), 3);
         """
         js = build_fill_verify_js([{"index": 3, "token": "country-name", "value": "US"}], nonce=NONCE, expected_origin=ORIGIN)
-        assert _run(setup, js) == {"landed": 0, "reverted": 1, "missing": []}
+        assert _run(setup, js) == {"landed": 0, "reverted": 1, "missing": [], "counts": []}
 
     @pytest.mark.parametrize(("value", "selected"), [
         ("United States", 0),   # matched by visible text, case/space-insensitive like the writer
@@ -224,7 +249,7 @@ class TestReadBack:
           stamp(select(document, [["US", "United States"], ["7", "7"]], {selected}), 3);
         """
         js = build_fill_verify_js([{"index": 3, "token": "country-name", "value": value}], nonce=NONCE, expected_origin=ORIGIN)
-        assert _run(setup, js) == {"landed": 1, "reverted": 0, "missing": []}
+        assert _run(setup, js) == {"landed": 1, "reverted": 0, "missing": [], "counts": []}
 
     def test_the_writer_and_the_read_back_agree_on_a_select(self):
         """Whatever option the fill script selects, the read-back accepts."""
@@ -234,7 +259,7 @@ class TestReadBack:
         fills = [{"index": 3, "token": "cc-exp-month", "value": "july"}]
         expr = ("(() => { " + build_fill_js(fills, expected_origin="https://example.com", nonce=NONCE)
                 + "; return " + build_fill_verify_js(fills, nonce=NONCE, expected_origin=ORIGIN) + "; })()")
-        assert _run(setup, expr) == {"landed": 1, "reverted": 0, "missing": []}
+        assert _run(setup, expr) == {"landed": 1, "reverted": 0, "missing": [], "counts": []}
 
     @pytest.mark.parametrize(("token", "value", "shown"), [
         ("cc-number", "4111111111111111", "4111 1111 1111 1111"),
@@ -323,7 +348,7 @@ class TestOverlappingOperations:
                 "const left = document.all().filter((n) => Object.keys(n.attrs).some((k) => k.startsWith("
                 "'data-hermes-vault-slot'))).length; "
                 "return { first, second, left }; })()")
-        landed = {"landed": 1, "reverted": 0, "missing": []}
+        landed = {"landed": 1, "reverted": 0, "missing": [], "counts": []}
         assert json.loads(_node(setup, expr)) == {"first": landed, "second": landed, "left": 0}
 
 
@@ -395,7 +420,7 @@ class TestOriginGuard:
 
     def test_the_same_page_still_reads_back(self):
         setup = f'stamp(add(document, "input", {{ type: "password", value: "{_SENTINEL}" }}), 1);'
-        assert _run(setup, _secret_scripts()["read-back"]) == {"landed": 1, "reverted": 0, "missing": []}
+        assert _run(setup, _secret_scripts()["read-back"]) == {"landed": 1, "reverted": 0, "missing": [], "counts": []}
 
     @pytest.mark.parametrize("build", [
         lambda fills: build_focus_js(fills, nonce=NONCE, expected_origin=ORIGIN),
@@ -461,7 +486,8 @@ _OWN_VERDICTS = {
     "focus": (_GUARDED_SCRIPTS["focus"], {"focused": 1}),
     "clear": (_GUARDED_SCRIPTS["clear"], {"cleared": 1}),
     "fill": (_GUARDED_SCRIPTS["fill"], {"filled": 1}),
-    "read-back": (_GUARDED_SCRIPTS["read-back"], {"landed": 1, "reverted": 0, "missing": []}),
+    "read-back": (_GUARDED_SCRIPTS["read-back"],
+                  {"landed": 1, "reverted": 0, "missing": [], "counts": []}),
     "unstamp": (lambda: build_unstamp_js(NONCE), {"unstamped": True}),
 }
 
@@ -509,7 +535,7 @@ class TestForgedVerdicts:
         """On the checked origin the read-back's counts are the script's own: a field that lost its
         stamp (re-rendered) is missing, not landed, whatever JSON or ``then`` the page defined."""
         setup = 'add(document, "input", { type: "password", value: "" });' + _LYING_PAGES[page]
-        assert _run(setup, _secret_scripts()["read-back"]) == {"landed": 0, "reverted": 0, "missing": [1]}
+        assert _run(setup, _secret_scripts()["read-back"]) == {"landed": 0, "reverted": 0, "missing": [1], "counts": []}
 
     @pytest.mark.parametrize("page", _ANSWERING_PAGES)
     @pytest.mark.parametrize("script", sorted(_OWN_VERDICTS))

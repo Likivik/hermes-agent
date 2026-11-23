@@ -619,6 +619,11 @@ class TestBrowserVaultTools:
             self.typed.append((text, self.sid))
             return {"ok": True}
 
+        def press_key(self, key, *, session_id, **kwargs):
+            if session_id != self.sid:
+                return {"ok": False, "error": "page session changed"}
+            return {"ok": True}
+
         def focus_page(self, origin, accept=None):
             return {"ok": True, "url": "https://example.com/login", "session_id": self.sid}
 

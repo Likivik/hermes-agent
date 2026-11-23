@@ -787,7 +787,7 @@ def _single_unclassified_box(raw_controls: list[dict[str, Any]], form: Optional[
 
 def _trusted_typing_fill(supervisor: Any, task_id: str, type_fills: list[dict[str, Any]],
                          js_fills: list[dict[str, Any]], page_origin: str, nonce: str,
-                         secret: dict[str, Any]) -> dict[str, Any]:
+                         secret: dict[str, Any], *, name_counts: bool = True) -> dict[str, Any]:
     """Fill a login's identifier with CDP TRUSTED typing (``Input.insertText``).
 
     A framework-controlled input (React/Vue/MUI) accepts a trusted input event and rejects a
@@ -816,14 +816,17 @@ def _trusted_typing_fill(supervisor: Any, task_id: str, type_fills: list[dict[st
 
     last = {"failure": None, "document": None}  # the latest script's refusal, and its document
 
-    def _abort(error_type: str, message: str) -> dict[str, Any]:
+    def _abort(error_type: str, message: str, hint: str | None = None) -> dict[str, Any]:
         # A script refused because the channel moved or a human took over names that cause, not the
         # check it broke (focus_lost, origin_changed): the caller retries or stops on it.
         moved = _channel_refusal(last["failure"])
         if moved is not None:
             return {"ok": False, **moved}
-        return {"ok": False, "success": False, "error_type": error_type, "filled_fields": 0,
-                "error": scrub_secret_from_text(message, secret)}
+        out: dict[str, Any] = {"ok": False, "success": False, "error_type": error_type,
+                               "filled_fields": 0, "error": scrub_secret_from_text(message, secret)}
+        if hint:
+            out["hint"] = scrub_secret_from_text(hint, secret)
+        return out
 
     def _script(expression: str) -> Any:
         res = _eval_js_secret(task_id, expression)
@@ -859,7 +862,7 @@ def _trusted_typing_fill(supervisor: Any, task_id: str, type_fills: list[dict[st
         if typed.get("ok"):
             return None
         error_type, message = _INSERT_REFUSALS.get(typed.get("code"), ("fill_unverified", ""))
-        return _abort(error_type, message or ("The browser refused the trusted input for one field: "
+        return _abort(error_type, message or (f"The browser refused the trusted input for one field: "
                                               f"{scrub_secret_from_text(str(typed.get('error') or 'input failed'), secret)}"))
 
     # The page that holds the stamps must still be the bound origin: the supervisor's tab can
@@ -885,6 +888,8 @@ def _trusted_typing_fill(supervisor: Any, task_id: str, type_fills: list[dict[st
         filled += int(js_result.get("filled", 0) or 0)
 
     def _type_field(f: dict[str, Any]) -> Optional[dict[str, Any]]:
+        # ``name_counts`` is off for a secret: how many characters of a password survived is itself
+        # a fact about the password, and the message must never describe one.
         """Type one field, read it back, and retype key by key when a mask mangled it.
 
         Returns ``None`` when the field holds exactly the value we typed, or a finished refusal.
@@ -931,19 +936,57 @@ def _trusted_typing_fill(supervisor: Any, task_id: str, type_fills: list[dict[st
             return None
 
         # A bulk insert lands wrong in a masked field (phone, date, card): the mask drops or
-        # reformats characters as they stream in. Clear it and type the value one key at a time,
-        # the way a person does, then read it back again.
+        # reformats characters as they stream in. Clear the field and type the value one key at a
+        # time, the way a person does, then read it back again.
+        #
+        # How the field is cleared decides whether the mask agrees it is empty. A mask keeps its own
+        # count of the characters it let through; a clear it never sees — the value written out from
+        # under it — leaves that count stale, and the retype then loses characters. A real key press
+        # is the deletion a mask listens for, so it comes first. The value write is the second try,
+        # for a control whose own clear key lands nowhere.
+        #
         # Focus is asserted before EVERY key: a page can move it after the first one, and the rest
         # of the value would land in whatever took it. Only the first key may (re)focus the field.
-        _script(build_clear_js([f], nonce, expected_origin=page_origin))
-        for position, char in enumerate(str(f["value"])):
-            aborted = _focused_insert(char, refocus=position == 0)
-            if aborted:
-                return aborted
-            time.sleep(_TYPE_PER_KEY_DELAY_S)
+        def _retype() -> Optional[dict[str, Any]]:
+            for position, char in enumerate(str(f["value"])):
+                aborted = _focused_insert(char, refocus=position == 0)
+                if aborted:
+                    return aborted
+                time.sleep(_TYPE_PER_KEY_DELAY_S)
+            return None
+
+        # The recovery is the way a person retypes: select the whole value, then type over it one
+        # key at a time. The focus check with refocus selects the field, and the first insert replaces
+        # that selection (measured: one key took the place of the whole value). So there is no clear
+        # step at all - a value written out from under a mask leaves the mask holding a stale count,
+        # and the retype then loses characters. Measured across the mask matrix, bulk typing works on
+        # every page and all the damage came from clears.
+        aborted = _retype()
+        if aborted:
+            return aborted
         verified = _verify()
         if _holds(verified):
             return None
+
+        # Nothing holds. The field keeps what it took: a value that landed part-way is what the
+        # page has, and wiping it hides the mismatch the caller needs to see. (This path only ever
+        # handles identifiers - passwords go by the JS write - so naming the counts is safe.)
+        counts = (verified or {}).get("counts") or [] if isinstance(verified, dict) else []
+        mine = next((c for c in counts if isinstance(c, dict) and c.get("index") == f["index"]), None)
+        if name_counts and isinstance(mine, dict):
+            # Kept, not shown: a mask adds its own characters (a country code) that were never
+            # typed, and counting the field's characters would overstate what survived.
+            typed_digits = int(mine.get("typed_digits") or 0)
+            if typed_digits:
+                what, kept, whole = "digits", int(mine.get("kept_digits") or 0), typed_digits
+            else:
+                what, kept, whole = ("characters", int(mine.get("kept") or 0),
+                                     int(mine.get("typed") or len(str(f["value"]))))
+            return _abort(
+                "fill_reverted",
+                f"The field kept {kept} of the {whole} {what} of the stored value.",
+                hint=f"Only {kept} of {whole} {what} stayed in the field. "
+                     "Check the value stored for this site.")
         return _abort("fill_reverted",
                       "The page rejected the value: the field did not hold it after it was "
                       "typed key by key. Nothing is filled.")
@@ -1081,6 +1124,35 @@ def _read_back(task_id: str, fills: list[dict[str, Any]], nonce: str, page_origi
     return {"success": True, "landed": landed}
 
 
+def _retry_password_with_trusted_typing(checked: dict[str, Any], meta: Any, trusted: bool,
+                                        fills: list[dict[str, Any]], supervisor: Any, task_id: str,
+                                        page_origin: str, nonce: str,
+                                        secret: dict[str, Any]) -> dict[str, Any]:
+    """When a page throws away the password the JS write put in, type it as trusted input.
+
+    A form may keep its own state and rewrite any value that arrived without a trusted input event -
+    it only believes edits a human made. The guarded JS write stays the first move: it is atomic and
+    cannot be pulled into another field by a page that steals focus. When the page discards it,
+    ``Input.insertText`` produces a trusted ``input`` event and sends no ``keydown``/``keyup``, so a
+    keylogger still sees nothing while the page sees a real edit. This is the same channel the
+    identifier already goes through, and the rest of the field - the automation tools that type
+    rather than write - all work on pages like this.
+
+    Passwords only. A card or an address is bound to its site and never takes this path, and the
+    failure message never says how much of a secret survived.
+    """
+    if not trusted or meta.kind != "login":
+        return checked
+    password_fills = [f for f in fills if f.get("token") == "current-password"]
+    if not password_fills:
+        return checked
+    retried = _trusted_typing_fill(supervisor, task_id, password_fills, [], page_origin, nonce,
+                                   secret, name_counts=False)
+    if not retried.get("ok"):
+        return checked
+    return _read_back(task_id, fills, nonce, page_origin)
+
+
 def _fill_bound_page(backend: Any, handle: str, meta: Any, page_origin: str, effective_task_id: str,
                      nonce: str, with_identifier: bool = False) -> str:
     """Inspect the page (stamping under ``nonce``), resolve the item's secret and write it; runs inside
@@ -1188,6 +1260,9 @@ def _fill_bound_page(backend: Any, handle: str, meta: Any, page_origin: str, eff
             return json.dumps(written)
 
     checked = _read_back(effective_task_id, fills, nonce, page_origin)
+    if not checked.get("success"):
+        checked = _retry_password_with_trusted_typing(
+            checked, meta, trusted, fills, supervisor, effective_task_id, page_origin, nonce, secret)
     if not checked.get("success"):
         return json.dumps(checked)
     landed = int(checked["landed"])

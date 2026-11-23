@@ -36,6 +36,7 @@ class _Supervisor:
     def __init__(self, controls):
         self.controls, self.sid, self.document = controls, "S1", 1
         self.typed: list[str] = []
+        self.keys: list[str] = []
         self.on_focus: Callable[[], object] = lambda: None
 
     def current_page_session(self):
@@ -74,6 +75,15 @@ class _Supervisor:
         if document is not None and document != self.document:
             return {"ok": False, "error": "the page navigated or moved since it was checked", "code": "document_changed"}
         self.typed.append(text)
+        return {"ok": True}
+
+    def press_key(self, key, *, session_id, document=None, **kwargs):
+        # the same admissions a keystroke gets: the page session and document the checks ran on
+        if session_id != self.sid:
+            return {"ok": False, "error": "the page session changed since it was validated", "code": "session_changed"}
+        if document is not None and document != self.document:
+            return {"ok": False, "error": "the page navigated or moved since it was checked", "code": "document_changed"}
+        self.keys.append(key)
         return {"ok": True}
 
 
@@ -390,12 +400,56 @@ def test_a_moved_channel_is_reported_with_hermes_text_not_the_browser_error(tmp_
     assert sup.typed == []
 
 
+def test_the_password_is_typed_when_the_page_discards_the_write(tmp_path):
+    """A page that keeps its own state throws away a value written without a trusted input event -
+    it only believes edits a human made. The JS write is tried first; when the read-back says the
+    password did not land, it is typed the same way the identifier is: a trusted insert, no
+    keystrokes. The failure message never says how much of a secret survived."""
+    sup = _Supervisor(_LOGIN)
+    answer = sup._answer
+    reads = {"n": 0}
+
+    def recording(expression):
+        if "reverted" in expression:
+            reads["n"] += 1
+            if reads["n"] == 1:      # the identifier's own verify: typed and held
+                return {"landed": 1, "reverted": 0, "missing": []}
+            if reads["n"] == 2:      # the read-back: the write was discarded, nothing landed
+                return {"landed": 0, "reverted": 2, "missing": []}
+            if reads["n"] == 3:      # the password's verify after it was typed
+                return {"landed": 1, "reverted": 0, "missing": []}
+            return {"landed": 2, "reverted": 0, "missing": []}
+        return answer(expression)
+
+    sup._answer = recording
+    with patch("tools.browser_vault_tool._TYPE_PER_KEY_DELAY_S", 0), \
+         patch("tools.browser_vault_tool._FILL_VERIFY_STABLE_S", 0), \
+         patch("tools.browser_vault_tool._FILL_VERIFY_CEILING_S", 0):
+        out = _fill(sup, tmp_path)
+    assert out["success"] is True and out["filled_fields"] == 2, out
+    assert PASSWORD in "".join(sup.typed)          # typed as trusted input, one insert
+    assert sup.keys == []                          # never as a keystroke
+    assert "kept" not in json.dumps(out)           # no counts about a secret
+
+
+def test_the_write_is_tried_first_and_the_password_is_not_typed_when_it_lands(tmp_path):
+    """The fallback must not run on a page that accepted the write: typing a password is the last
+    resort, not the default."""
+    sup = _Supervisor(_LOGIN)
+    with patch("tools.browser_vault_tool._TYPE_PER_KEY_DELAY_S", 0):
+        out = _fill(sup, tmp_path)
+    assert out["success"] is True and out["filled_fields"] == 2
+    assert PASSWORD not in "".join(sup.typed)      # the guarded JS write did it
+    assert sup.keys == []
+
+
 @pytest.mark.parametrize("mangled", [False, True], ids=["bulk", "per-key-retype"])
 def test_the_password_is_never_sent_as_a_keystroke(tmp_path, mangled):
     """Input.insertText lands wherever focus is when the browser processes it, and a frame no page
     script can see (inside a closed shadow root) can take focus after the check. The password goes by
-    the guarded JS write on its stamped control on every path; only the identifier is typed, as one
-    insert or, when a mask mangled it, key by key."""
+    the guarded JS write on its stamped control whenever the page keeps it; only the identifier is
+    typed, as one insert or, when a mask mangled it, key by key. A page that discards the write gets
+    the password as a trusted insert - never as keydown/keyup, which is what a keylogger reads."""
     sup = _Supervisor(_LOGIN)
     scripts: list[str] = []
     answer = sup._answer

@@ -623,6 +623,26 @@ __OPTION_MATCH__
   let landed = 0;
   let reverted = 0;
   const missing = [];
+  // How much of the value the field kept: counts only. No value ever leaves this script.
+  // "Kept" is measured against the value, not against the field: a mask can add its own characters
+  // (a country code), and those were never typed, so counting the field's characters would overstate.
+  // Longest common subsequence, not a greedy walk: one dropped character must not fail every
+  // character after it. Measured on cab.y-plus - the first 10 of 13 digits survive a mask that adds
+  // its own code - a greedy walk reported 3.
+  const keptOf = (want, shown) => {
+    const n = want.length, m = shown.length;
+    if (!n || !m) return 0;
+    let prev = new Array(m + 1).fill(0);
+    let cur = new Array(m + 1).fill(0);
+    for (let i = 1; i <= n; i++) {
+      for (let j = 1; j <= m; j++) {
+        cur[j] = want[i - 1] === shown[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]);
+      }
+      [prev, cur] = [cur, prev];
+    }
+    return prev[m];
+  };
+  const counts = [];
   for (const f of fills) {
     const el = find("[" + slot + '="' + f.index + '"]')[0];
     if (!el) { missing.push(f.index); continue; }
@@ -631,8 +651,17 @@ __OPTION_MATCH__
       if (selected && optionMatches(selected, f.value)) landed += 1; else reverted += 1;
       continue;
     }
-    if (holds(f, String(el.value))) landed += 1; else reverted += 1;
+    if (holds(f, String(el.value))) { landed += 1; continue; }
+    reverted += 1;
+    const shown = String(el.value);
+    const want = String(f.value);
+    const wantDigits = want.match(/\d/g) || [];
+    const shownDigits = shown.match(/\d/g) || [];
+    counts.push({ __proto__: null, index: f.index,
+                  typed: want.length, held: shown.length,
+                  typed_digits: wantDigits.length, held_digits: shownDigits.length,
+                  kept: keptOf(want, shown), kept_digits: keptOf(wantDigits.join(''), shownDigits.join('')) });
   }
   if (__UNSTAMP__) find("[" + slot + "]").forEach((n) => n.removeAttribute(slot));
-  return { __proto__: null, landed, reverted, missing };
+  return { __proto__: null, landed, reverted, missing, counts };
 })()"""
