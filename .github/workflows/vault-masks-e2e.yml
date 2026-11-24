@@ -1,0 +1,25 @@
+name: Vault masks e2e
+
+# Runs the one eval that pins down the three fill behaviours the site matrix found. It lives as its
+# own workflow because CI's suite discovers tests/ only and never runs evals/, and because it drives
+# a real browser. Dispatched by hand: no push trigger, no PR.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  masks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up locked Python and test dependencies
+        uses: ./.github/actions/setup-pm
+        with:
+          test-environment: 'true'
+
+      - name: Run the masks eval
+        env:
+          HERMES_E2E_BROWSER: '1'
+        run: '"$HERMES_PYTHON" evals/vault_fill_masks_e2e.py'
