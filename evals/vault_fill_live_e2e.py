@@ -94,7 +94,7 @@ def main() -> int:
         ap.request_elicitation_consent = lambda *a, **k: "decline"
         out = json.loads(bvt.browser_vault_fill(card.id, task_id=TASK))
         assert out["error_type"] == "payment_declined", out
-        assert sup.focus_page(origin, accept=bvt._TAB_PROBES["payment"])["ok"]
+        assert sup.focus_page(origin, accept=bvt.TAB_PROBES["payment"])["ok"]
         r = sup.evaluate_runtime("['cardnum','exp','cvv'].map(n => document.querySelector('[name='+n+']').value).join('|')")
         assert r.get("result") == "||", r
         print("payment: declined confirmation wrote nothing")
@@ -123,7 +123,7 @@ def main() -> int:
         print("save_login:", out)
         assert out["success"] and out["origin"] == origin and out["fill"]["success"], out
         assert "pw-SAVE-5150" not in raw
-        assert sup.focus_page(origin, accept=bvt._TAB_PROBES["login"])["ok"]
+        assert sup.focus_page(origin, accept=bvt.TAB_PROBES["login"])["ok"]
         dom = sup.evaluate_runtime("location.pathname + ' ' + document.querySelector('input[name=pw]').value")
         assert dom["result"] == "/login pw-SAVE-5150", dom
         print("save_login: found the login tab from a blank default page, bound to its origin, filled")

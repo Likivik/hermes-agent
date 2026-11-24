@@ -79,7 +79,7 @@ def _values(names: list[str]) -> str:
 
 def _digits(sup, origin, bvt) -> str:
     """Every digit held by every telephone field on the page."""
-    sup.focus_page(origin, accept=bvt._TAB_PROBES["login"])
+    sup.focus_page(origin, accept=bvt.TAB_PROBES["login"])
     dom = sup.evaluate_runtime(
         "JSON.stringify(Array.from(document.querySelectorAll('[type=tel],[type=email]')).map(e => e.value))")
     return "".join(c for c in "".join(json.loads(dom.get("result") or "[]")) if c.isdigit())
@@ -133,7 +133,7 @@ def main() -> int:
         assert out["success"] and out["filled_fields"] == 2, out
         raw = json.dumps(out)
         assert PASSWORD not in raw
-        sup.focus_page(origins["plain"], accept=bvt._TAB_PROBES["login"])
+        sup.focus_page(origins["plain"], accept=bvt.TAB_PROBES["login"])
         dom = sup.evaluate_runtime(_values(["email", "pw"]))
         assert dom["result"] == f"a@b.c|{PASSWORD}", dom
         assert PASSWORD not in json.dumps(_redact_cdp_output({"result": {"value": dom["result"]}}))
@@ -143,7 +143,7 @@ def main() -> int:
         out = fill("stateful")
         assert out["success"] and out["filled_fields"] == 2, out
         assert PASSWORD not in json.dumps(out)
-        sup.focus_page(origins["stateful"], accept=bvt._TAB_PROBES["login"])
+        sup.focus_page(origins["stateful"], accept=bvt.TAB_PROBES["login"])
         dom = sup.evaluate_runtime(_values(["email", "pw"]))
         assert dom["result"] == f"a@b.c|{PASSWORD}", dom      # the password survived the rewrite
         assert PASSWORD in "".join(inserted)                  # the fallback typed it as trusted input
@@ -178,7 +178,7 @@ def main() -> int:
         # a second tel box can be "confirm phone" or an unrelated "landline"
         out = fill("mask-two-tel")
         assert out["success"] and out["filled_fields"] == 2, out
-        sup.focus_page(origins["mask-two-tel"], accept=bvt._TAB_PROBES["login"])
+        sup.focus_page(origins["mask-two-tel"], accept=bvt.TAB_PROBES["login"])
         dom = sup.evaluate_runtime(
             "JSON.stringify(Array.from(document.querySelectorAll('[type=tel]')).map(e => e.value))")
         held = json.loads(dom.get("result") or "[]")

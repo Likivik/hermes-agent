@@ -366,8 +366,9 @@ def _deep_probe(selector: str) -> str:
             ".some((e) => e.shadowRoot && w(e.shadowRoot)); return !!w(document); })(" + json.dumps(selector) + ")")
 
 
-# Per kind: a JS probe that is truthy on a tab holding the form this kind fills.
-_TAB_PROBES = {
+# Per kind: a JS probe that is truthy on a tab holding the form this kind fills. Public: evals
+# and tests use it to focus the same tab the fill would pick.
+TAB_PROBES = {
     "login": _deep_probe("input[type=password]"),
     "payment": _deep_probe("input[autocomplete^=cc-], [name*=card i], [placeholder*=card i], [name*=cvc i], [name*=cvv i]"),
     "address": _deep_probe("input[autocomplete^=address-], [autocomplete=postal-code], [name*=address i], [name*=zip i], [name*=postal i]"),
@@ -392,7 +393,7 @@ def _focus_bound_origin(task_id: str, origin: str, kind: str) -> Optional[_Check
         supervisor = None
     if supervisor is None:
         return None
-    focused = supervisor.focus_page(origin, accept=_TAB_PROBES.get(kind))
+    focused = supervisor.focus_page(origin, accept=TAB_PROBES.get(kind))
     if not focused.get("ok"):
         return None
     return _CheckedPage(origin or str(focused.get("url") or ""), focused.get("session_id"))
@@ -566,7 +567,7 @@ def _looks_like_phone(identifier: str) -> bool:
     return bool(_RE_PHONE.fullmatch(identifier)) and sum(ch.isdigit() for ch in identifier) >= 7
 
 
-_TAB_PROBES["otp"] = _deep_probe("input[autocomplete=one-time-code], input[name*=otp i], input[name*=code i], "
+TAB_PROBES["otp"] = _deep_probe("input[autocomplete=one-time-code], input[name*=otp i], input[name*=code i], "
                                   "input[id*=otp i], input[id*=code i], input[name*=totp i], input[aria-label*=code i]")
 
 
