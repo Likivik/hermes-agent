@@ -42,7 +42,7 @@ PHONE = "79991234567"          # 11 digits
 TASK = "vault-fixtures-e2e"
 
 # every page but two carries a phone identifier; plain and stateful carry an email
-EMAIL_PAGES = {"plain", "stateful"}
+EMAIL_PAGES = {"plain", "stateful", "iframe-same-origin", "iframe-cross-origin"}
 # the value the vault holds for each page: shorter where the page asks for the short side
 IDENTIFIER = {name: ("a@b.c" if name in EMAIL_PAGES else PHONE) for name in
               (p.stem for p in PAGES_DIR.glob("*.html"))}
@@ -88,6 +88,10 @@ def _digits(sup, origin, bvt) -> str:
 def main() -> int:
     # one server per page: each page gets its own origin, so an item is bound to exactly one form
     servers, origins = {}, {}
+    # a second origin on a FIXED port, so the iframe in iframe-cross-origin.html is genuinely
+    # another origin - the port is hardcoded in that page
+    servers["cross"] = http.server.ThreadingHTTPServer(("127.0.0.1", 8477), _Handler)
+    threading.Thread(target=servers["cross"].serve_forever, daemon=True).start()
     for name in PAGES:
         srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _Handler)
         threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -202,6 +206,43 @@ def main() -> int:
         assert out["success"] and out["filled_fields"] == 2, out
         assert _digits(sup, origins["click-reveal"], bvt) == PHONE
         print("click-reveal: filled the form the caller revealed")
+
+        # iframe-same-origin - the login form lives inside a same-origin frame: an embedded login
+        # widget. The fill must find, write and verify the fields INSIDE the frame.
+        out = fill("iframe-same-origin")
+        assert out["success"] and out["filled_fields"] == 2, out
+        sup.focus_page(origins["iframe-same-origin"], accept=bvt.TAB_PROBES["login"])
+        dom = sup.evaluate_runtime(
+            "JSON.stringify((() => { const d = document.querySelector('iframe').contentDocument;"
+            " return [d.querySelector('[name=email]').value, d.querySelector('[name=pw]').value]; })())")
+        held = json.loads(dom.get("result") or "[]")
+        assert held == ["a@b.c", PASSWORD], held
+        print("iframe-same-origin: both fields filled inside the frame, read through contentDocument")
+
+        # iframe-cross-origin - the frame is another origin: its document is unreachable from the
+        # page, so nothing may be stamped, written or typed into it, and the fill must say so. The
+        # read drives the exec tab to the page first: its login probe cannot match (the fields are
+        # in a frame the probe cannot read), and the driven tab is the only focus candidate.
+        _exec(f"goto_url({origins['iframe-cross-origin'] + '/iframe-cross-origin.html'!r}); wait_for_load()")
+        out = fill("iframe-cross-origin")
+        assert not out["success"], out
+        assert "No login form fields" in str(out.get("error", "")), out
+        touched = sup.evaluate_runtime("String(window.__childTouched || 0)")
+        assert touched.get("result") == "0", touched      # the child reports its own input events
+        print("iframe-cross-origin: refused, and the frame's fields stayed empty")
+
+        # phone-only - a phone-first login step: no password box on this screen, the identifier
+        # must land on its own. The password is never typed and never written: there is no field
+        out = fill("phone-only")
+        sup.focus_page(origins["phone-only"], accept=bvt.TAB_PROBES["login"])
+        dom = sup.evaluate_runtime(_values(["phone"]))
+        if out.get("success"):
+            assert out["filled_fields"] == 1, out
+            assert dom["result"] == PHONE, dom
+            print("phone-only: the identifier filled with no password field on the page")
+        else:
+            # the honest shape of today: name exactly what refused, so the answer is a fact
+            print(f"phone-only REFUSED: {out.get('error')}")
 
         from agent import redact
         redact.clear_vault_redaction_values()

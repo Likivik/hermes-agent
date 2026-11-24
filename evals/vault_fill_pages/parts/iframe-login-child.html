@@ -1,0 +1,12 @@
+<!doctype html>
+<!-- The login form that lives inside an iframe. Used by iframe-same-origin.html (the parent
+     reads this document directly - same origin) and by iframe-cross-origin.html (the parent
+     cannot read it; this page reports its own input events to the parent instead, so the eval
+     can prove nothing was typed into a frame the fill cannot see). -->
+<title>iframe login child</title>
+<form><input name=email type=email autocomplete=username><input name=pw type=password autocomplete=current-password></form>
+<script>
+  for (const el of document.querySelectorAll('input')) {
+    el.addEventListener('input', () => window.parent.postMessage({ box: el.name }, '*'));
+  }
+</script>

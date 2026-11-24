@@ -360,10 +360,14 @@ def _current_page_origin(task_id: str) -> Optional[str]:
 
 
 def _deep_probe(selector: str) -> str:
-    """A JS expression truthy when ``selector`` matches in the document or any open shadow root (the
-    inspection and fill scripts reach shadow-root forms, so tab selection must too)."""
+    """A JS expression truthy when ``selector`` matches in the document, any open shadow root, or
+    any same-origin iframe (the inspection and fill scripts reach shadow-root and same-origin
+    frame forms, so tab selection must too; a cross-origin frame's contentDocument is null, so a
+    frame we cannot read never makes a tab a candidate)."""
     return ("((s) => { const w = (r) => r.querySelector(s) || Array.from(r.querySelectorAll('*'))"
-            ".some((e) => e.shadowRoot && w(e.shadowRoot)); return !!w(document); })(" + json.dumps(selector) + ")")
+            ".some((e) => { if (e.shadowRoot && w(e.shadowRoot)) return true; "
+            "try { return (e.tagName === 'IFRAME' || e.tagName === 'FRAME') && !!e.contentDocument && w(e.contentDocument); } "
+            "catch (err) { return false; } }); return !!w(document); })(" + json.dumps(selector) + ")")
 
 
 # Per kind: a JS probe that is truthy on a tab holding the form this kind fills. Public: evals

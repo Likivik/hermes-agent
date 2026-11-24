@@ -264,11 +264,14 @@ _LOGIN_CONTROL_INSPECTION_JS_TEMPLATE = """(() => {
   // would leave its controls ungrouped (formIndex null) and merge split OTP boxes across forms.
   const elements = [];
   const forms = [];
+  // Same-origin iframes carry real login forms (embedded widgets); walk into them. A
+  // cross-origin frame's contentDocument is null, so it contributes nothing - by design.
   (function walk(root) {
     for (const e of root.querySelectorAll("*")) {
       if (e.tagName === "INPUT" || e.tagName === "SELECT") elements.push(e);
       else if (e.tagName === "FORM") forms.push(e);
       if (e.shadowRoot) walk(e.shadowRoot);
+      try { if ((e.tagName === "IFRAME" || e.tagName === "FRAME") && e.contentDocument) walk(e.contentDocument); } catch (err) { /* not ours */ }
     }
   })(document);
   elements.forEach((element, index) => element.setAttribute("data-hermes-vault-slot-" + nonce, String(index)));
@@ -369,9 +372,15 @@ __ORIGIN_GUARD__
   // Stamped controls may live inside a shadow root (see the inspection script's walk): collect the
   // document and every open shadow root once, then look each stamp up in those roots.
   const roots = [];
+  // Same-origin iframes are part of the page's form (an embedded login widget): walk into them.
+  // contentDocument is null for a cross-origin frame, so those stay unreachable BY DESIGN - a
+  // frame we cannot read is a frame we never stamp, fill or verify.
   (function walk(root) {
     roots.push(root);
-    for (const e of root.querySelectorAll("*")) if (e.shadowRoot) walk(e.shadowRoot);
+    for (const e of root.querySelectorAll("*")) {
+      if (e.shadowRoot) walk(e.shadowRoot);
+      try { if ((e.tagName === "IFRAME" || e.tagName === "FRAME") && e.contentDocument) walk(e.contentDocument); } catch (err) { /* not ours */ }
+    }
   })(document);
   const find = (selector) => roots.flatMap((r) => Array.from(r.querySelectorAll(selector)));
   let filled = 0;
@@ -473,17 +482,32 @@ __ORIGIN_GUARD__
   const f = fills[0];
   if (!f) return { __proto__: null, refused: "not_found" };
   const roots = [];
+  // Same-origin iframes are part of the page's form (an embedded login widget): walk into them.
+  // contentDocument is null for a cross-origin frame, so those stay unreachable BY DESIGN - a
+  // frame we cannot read is a frame we never stamp, fill or verify.
   (function walk(root) {
     roots.push(root);
-    for (const e of root.querySelectorAll("*")) if (e.shadowRoot) walk(e.shadowRoot);
+    for (const e of root.querySelectorAll("*")) {
+      if (e.shadowRoot) walk(e.shadowRoot);
+      try { if ((e.tagName === "IFRAME" || e.tagName === "FRAME") && e.contentDocument) walk(e.contentDocument); } catch (err) { /* not ours */ }
+    }
   })(document);
   const find = (selector) => roots.flatMap((r) => Array.from(r.querySelectorAll(selector)));
   const el = find("[" + slot + '="' + f.index + '"]')[0];
   if (!el) return { __proto__: null, refused: "not_found" };
   // Selecting the field's text makes the next Input.insertText replace a prefilled value, not prefix it.
   if (__REFOCUS__) { try { el.focus(); el.select(); } catch (e) { /* focus can throw on a detached node */ } }
+  // The focused element may sit inside a shadow root or a same-origin frame: resolve through
+  // both. A cross-origin frame cannot hold our focus target, so it needs no case here.
   let active = document.activeElement;
-  while (active && active.shadowRoot && active.shadowRoot.activeElement) active = active.shadowRoot.activeElement;
+  for (;;) {
+    if (active && active.shadowRoot && active.shadowRoot.activeElement) { active = active.shadowRoot.activeElement; continue; }
+    if (active && (active.tagName === "IFRAME" || active.tagName === "FRAME") && active.contentDocument) {
+      const inner = active.contentDocument.activeElement;
+      if (inner && inner.tagName !== "BODY") { active = inner; continue; }
+    }
+    break;
+  }
   if (active !== el) return { __proto__: null, refused: "focus_lost", tag: el.tagName, found: active ? active.tagName : null };
   // A frame runs in its own process and can take focus between this check and the keystroke, which
   // Input.insertText then types into the frame's document: another origin.
@@ -514,7 +538,8 @@ def build_unstamp_js(nonce: str) -> str:
     """
     return ("(() => { const slot = " + json.dumps(f"{INSPECTION_STAMP_ATTR}-{nonce}") + "; const roots = []; "
             "(function walk(root) { roots.push(root); "
-            "for (const e of root.querySelectorAll('*')) if (e.shadowRoot) walk(e.shadowRoot); "
+            "for (const e of root.querySelectorAll('*')) { if (e.shadowRoot) walk(e.shadowRoot); "
+            "try { if ((e.tagName === 'IFRAME' || e.tagName === 'FRAME') && e.contentDocument) walk(e.contentDocument); } catch (err) {} } "
             "})(document); const find = (s) => roots.flatMap((r) => Array.from(r.querySelectorAll(s))); "
             "find('[' + slot + ']').forEach((n) => n.removeAttribute(slot)); "
             "return { __proto__: null, unstamped: true }; })()")
@@ -526,9 +551,15 @@ __ORIGIN_GUARD__
   const nonce = __NONCE__;
   const slot = "data-hermes-vault-slot-" + nonce;
   const roots = [];
+  // Same-origin iframes are part of the page's form (an embedded login widget): walk into them.
+  // contentDocument is null for a cross-origin frame, so those stay unreachable BY DESIGN - a
+  // frame we cannot read is a frame we never stamp, fill or verify.
   (function walk(root) {
     roots.push(root);
-    for (const e of root.querySelectorAll("*")) if (e.shadowRoot) walk(e.shadowRoot);
+    for (const e of root.querySelectorAll("*")) {
+      if (e.shadowRoot) walk(e.shadowRoot);
+      try { if ((e.tagName === "IFRAME" || e.tagName === "FRAME") && e.contentDocument) walk(e.contentDocument); } catch (err) { /* not ours */ }
+    }
   })(document);
   const find = (selector) => roots.flatMap((r) => Array.from(r.querySelectorAll(selector)));
   let cleared = 0;
@@ -568,9 +599,15 @@ __ORIGIN_GUARD__
   const nonce = __NONCE__;
   const slot = "data-hermes-vault-slot-" + nonce;
   const roots = [];
+  // Same-origin iframes are part of the page's form (an embedded login widget): walk into them.
+  // contentDocument is null for a cross-origin frame, so those stay unreachable BY DESIGN - a
+  // frame we cannot read is a frame we never stamp, fill or verify.
   (function walk(root) {
     roots.push(root);
-    for (const e of root.querySelectorAll("*")) if (e.shadowRoot) walk(e.shadowRoot);
+    for (const e of root.querySelectorAll("*")) {
+      if (e.shadowRoot) walk(e.shadowRoot);
+      try { if ((e.tagName === "IFRAME" || e.tagName === "FRAME") && e.contentDocument) walk(e.contentDocument); } catch (err) { /* not ours */ }
+    }
   })(document);
   const find = (selector) => roots.flatMap((r) => Array.from(r.querySelectorAll(selector)));
 __OPTION_MATCH__

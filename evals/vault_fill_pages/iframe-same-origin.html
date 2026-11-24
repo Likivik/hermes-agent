@@ -1,0 +1,9 @@
+<!doctype html>
+<!-- A login form that lives inside a SAME-ORIGIN iframe: an embedded login widget. The frame's
+     document is reachable from the page (contentDocument), so the fill must find the fields
+     inside it, stamp, write and verify them there. The password still goes by the guarded JS
+     write: the trusted-typing fallback refuses any page with a frame on it, by design.
+     Found on: test-the-web forms/login/nested-iframe-login - and real sites that embed their
+     login as a widget served from the same origin. -->
+<title>iframe-same-origin</title>
+<iframe src="/parts/iframe-login-child" style="width:340px;height:90px"></iframe>

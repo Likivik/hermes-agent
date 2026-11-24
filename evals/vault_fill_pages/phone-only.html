@@ -1,0 +1,9 @@
+<!doctype html>
+<!-- A phone-first login step: a telephone field and no password box on this screen. Many real
+     logins ask the number first and show the password only on the next screen. The fill must
+     land the identifier here on its own - the code half-claims it can (_identifier_fill:
+     "On an identifier-only step (no password field yet) the best classified control on the page
+     is the whole fill") and a type=tel input classifies at score 85 with no marks at all.
+     Found on: no site - this page exists to answer the question "does it, though?" -->
+<title>phone-only</title>
+<form><input id=phone name=phone type=tel autocomplete=tel></form>

@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- A login form inside a CROSS-ORIGIN iframe. The frame's document is NOT reachable from this
+     page: contentDocument is null for another origin, so nothing can be stamped, written or
+     verified in it - the fill must refuse with "no login form fields". The child reports its own
+     input events back to this page, so the eval can prove the fields inside stayed empty:
+     nothing is ever typed into a frame we cannot read.
+     The child is served from a second local origin (a fixed port), so the frame is genuinely
+     cross-origin. Found on: nothing yet - this is the guard that must hold before it is ever
+     needed. -->
+<title>iframe-cross-origin</title>
+<iframe src="http://127.0.0.1:8477/parts/iframe-login-child" style="width:340px;height:90px"></iframe>
+<script>
+  window.__childTouched = 0;
+  window.addEventListener('message', (e) => { window.__childTouched += 1; });
+</script>
