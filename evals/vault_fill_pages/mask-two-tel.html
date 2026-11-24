@@ -1,0 +1,14 @@
+<!doctype html>
+<!-- Two telephone fields in one form, both masked. The fill must handle the form, not only the
+     first field it warms up on.
+     Found on: the react-input-mask demo page, whose form carries two tel inputs. -->
+<title>mask-two-tel</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=phone2 type=tel><input name=pw type=password></form>
+<script>
+  for (const el of document.querySelectorAll('[type=tel]')) {
+    el.addEventListener('input', () => {
+      const d = el.value.replace(/\D/g, '').slice(0, 11);
+      el.value = d.replace(/^(\d{3})(\d{3})(\d{2})(\d{2})(\d+)$/, '$1 $2 $3 $4 $5');
+    });
+  }
+</script>

@@ -1,0 +1,9 @@
+<!doctype html>
+<!-- The vault value SHORTER than the field: 8 digits where 11 fit. The other side of the length
+     axis from mask-exact - a value with room to spare must simply fill. -->
+<title>mask-short</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
+<script>
+  const el = document.getElementById('phone');
+  el.addEventListener('input', () => { el.value = el.value.replace(/\D/g, '').slice(0, 11); });
+</script>

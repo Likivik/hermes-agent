@@ -1,9 +1,10 @@
-name: Vault masks e2e
+name: Vault fill fixtures e2e
 
-# Runs the evals that pin down the fill behaviours the site list found. They live as their own
-# workflow because CI's suite discovers tests/ only and never runs evals/, and because they drive a
-# real browser. The lists under evals/vault_fill_sites/ are the checked-by-hand record those evals
-# are generated from.
+# Runs the one eval that pins down every fill behaviour we found on real sites, as checked-in
+# pages under evals/vault_fill_pages/ - offline, deterministic, no fixture checkout, no list.
+# It lives as its own workflow because CI's suite discovers tests/ only and never runs evals/,
+# and because it drives a real browser. Where each page came from is written in the HTML
+# comment inside the page itself; the 124-row list that produced them is in git history.
 #
 # The trigger is a push to this branch and not workflow_dispatch: GitHub only dispatches a workflow
 # that exists on the default branch, and this one is meant to stay off it. A push trigger is read
@@ -16,7 +17,7 @@ on:
       - vault-fill-resilience
 
 jobs:
-  masks:
+  fixtures:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -27,12 +28,7 @@ jobs:
         with:
           test-environment: 'true'
 
-      - name: The three fill behaviours
+      - name: The nine fill behaviours
         env:
           HERMES_E2E_BROWSER: '1'
-        run: '"$HERMES_PYTHON" evals/vault_fill_masks_e2e.py'
-
-      - name: The classes the site list contains
-        env:
-          HERMES_E2E_BROWSER: '1'
-        run: '"$HERMES_PYTHON" evals/vault_fill_list_classes.py'
+        run: '"$HERMES_PYTHON" evals/vault_fill_fixtures_e2e.py'

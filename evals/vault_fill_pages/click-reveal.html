@@ -1,0 +1,18 @@
+<!doctype html>
+<!-- No form until a control is clicked. Revealing it is the CALLER's job - the agent or the
+     runner clicks, then the fill fills - so this page asserts the fill works on a form that
+     appears late, not that the fill clicks.
+     Found on: EU:www.bol.com, BR:www.americanas.com.br, and the ddg autoprompt fixtures. -->
+<title>click-reveal</title>
+<button id=go type=button>Log in</button>
+<script>
+  document.getElementById('go').addEventListener('click', () => {
+    const f = document.createElement('form');
+    for (const spec of [['phone', 'tel'], ['pw', 'password']]) {
+      const el = document.createElement('input');
+      el.name = spec[0]; el.type = spec[1];
+      f.appendChild(el);
+    }
+    document.body.appendChild(f);
+  });
+</script>

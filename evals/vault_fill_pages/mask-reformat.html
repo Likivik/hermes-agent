@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- A mask that keeps every digit but rewrites the string, so a literal compare would call the
+     fill a revert where it landed everything. The fill must judge by digits, not punctuation.
+     Found on: https://nosir.github.io/cleave.js/, https://intl-tel-input.com/examples/ - and the
+     country-code form of it on https://cab.uksn.ru (a +7 prefix is punctuation to the fill, not
+     a wrong number). -->
+<title>mask-reformat</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
+<script>
+  const el = document.getElementById('phone');
+  el.addEventListener('input', () => {
+    const d = el.value.replace(/\D/g, '').slice(0, 11);
+    el.value = d.replace(/^(\d{3})(\d{3})(\d{2})(\d{2})(\d+)$/, '$1 $2 $3 $4 $5');
+  });
+</script>

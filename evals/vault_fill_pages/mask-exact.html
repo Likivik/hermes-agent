@@ -1,0 +1,11 @@
+<!doctype html>
+<!-- The same mask family with the limit moved out of reach: 11 digits where 11 are allowed.
+     No single site stands for this page - it is the length axis of mask-truncate. Only a vault
+     value LONGER than the field can hold is a limit; a value that fits, exactly or with room to
+     spare, is an ordinary fill and must be reported as nothing else. -->
+<title>mask-exact</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
+<script>
+  const el = document.getElementById('phone');
+  el.addEventListener('input', () => { el.value = el.value.replace(/\D/g, '').slice(0, 11); });
+</script>

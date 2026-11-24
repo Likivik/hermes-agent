@@ -1,0 +1,21 @@
+<!doctype html>
+<!-- A page that keeps its own state and believes only edits a human made.
+     Found on: the Bitwarden fixture forms/login/input-event-trust-login - a page that updates
+     state only from trusted input events (event.isTrusted true) and reconciles on a short
+     interval. On that page the email lands and the password is discarded: 0 chars.
+     The JS value write is refused at the setter, so it is never there at all - no read-back can
+     catch one in place and the fill always meets the discard. A real page reconciles on a timer
+     instead; the setter is the same rule made synchronous so this test cannot race it.
+     The guard sits on the PROTOTYPE, not on the element: a value written through the element's
+     own property can be bypassed by calling the native setter, and the guarded JS fill does
+     exactly that. Typed text does not pass through the setter at all, so a human - or
+     Input.insertText - still lands. -->
+<title>stateful</title>
+<form><input id=email name=email type=email><input id=pw name=pw type=password></form>
+<script>
+  const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+  Object.defineProperty(HTMLInputElement.prototype, 'value', {
+    get() { return desc.get.call(this); },
+    set(v) { /* an untrusted write is dropped */ },
+  });
+</script>

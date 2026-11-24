@@ -1,0 +1,13 @@
+<!doctype html>
+<!-- A mask that formats only when the field loses focus, so nothing looks wrong until after the
+     fill is done. Must still fill, and still be judged after the reformat.
+     Found on: modern/megafon, modern/antd-pro - controls that reconcile their mask on blur. -->
+<title>mask-on-blur</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
+<script>
+  const el = document.getElementById('phone');
+  el.addEventListener('blur', () => {
+    const d = el.value.replace(/\D/g, '').slice(0, 11);
+    el.value = d.replace(/^(\d{3})(\d{3})(\d{2})(\d{2})(\d+)$/, '$1 $2 $3 $4 $5');
+  });
+</script>
