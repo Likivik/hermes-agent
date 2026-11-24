@@ -1,6 +1,8 @@
 <!doctype html>
-<!-- Two telephone fields in one form, both masked. The fill must handle the form, not only the
-     first field it warms up on.
+<!-- Two telephone fields in one form. The fill must not be confused by the second box: it fills
+     the ONE best candidate (the autocomplete=tel one) and leaves the bare second box alone,
+     because on a real form a second tel box can be "confirm phone" or an unrelated "landline" -
+     a guess the fill refuses to make.
      Found on: the react-input-mask demo page, whose form carries two tel inputs. -->
 <title>mask-two-tel</title>
 <form><input id=phone name=phone type=tel autocomplete=tel><input name=phone2 type=tel><input name=pw type=password></form>

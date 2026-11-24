@@ -173,7 +173,9 @@ def main() -> int:
         assert _digits(sup, origins["mask-reformat"], bvt) == PHONE
         print("mask-reformat: the string was rewritten, all 11 digits judged and held")
 
-        # mask-two-tel - the form is handled, not just one field
+        # mask-two-tel - two phone fields in one form must not confuse the fill: it fills the one
+        # best candidate (the autocomplete=tel one) and refuses to guess with the second, because
+        # a second tel box can be "confirm phone" or an unrelated "landline"
         out = fill("mask-two-tel")
         assert out["success"] and out["filled_fields"] == 2, out
         sup.focus_page(origins["mask-two-tel"], accept=bvt._TAB_PROBES["login"])
@@ -181,8 +183,8 @@ def main() -> int:
             "JSON.stringify(Array.from(document.querySelectorAll('[type=tel]')).map(e => e.value))")
         held = json.loads(dom.get("result") or "[]")
         digits = ["".join(c for c in v if c.isdigit()) for v in held]
-        assert any(d == PHONE for d in digits), held           # the full number sits in a field
-        print(f"mask-two-tel: the form filled; {sum(1 for d in digits if d)} of {len(digits)} tel fields hold digits")
+        assert digits == [PHONE, ""], held            # the right field, and only that one
+        print("mask-two-tel: the autocomplete=tel field filled; the bare second box left alone")
 
         # mask-on-blur - formats only after the fill is done
         out = fill("mask-on-blur")
