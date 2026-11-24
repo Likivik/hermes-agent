@@ -1,0 +1,1805 @@
+{
+  "targets": [
+    {
+      "name": "https://cab.uksn.ru",
+      "url": "https://cab.uksn.ru",
+      "tier": "fill",
+      "scan": "usable: has input field",
+      "note": "masked phone field; fills 9-11 digits, verdict says failure",
+      "title": "Личный кабинет",
+      "inputs": 4,
+      "textish": 1,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "false-failure",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": true,
+        "verdict": "false-failure",
+        "landed_fields": 2,
+        "error": "The page rejected the value: the field did not hold it after it was typed key by key. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://lk.kvp24.ru",
+      "url": "https://lk.kvp24.ru",
+      "tier": "fill",
+      "scan": "usable: has input field",
+      "title": "Квартплата24 - Личный кабинет жителя",
+      "inputs": 2,
+      "textish": 1,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://cabinet.kvado.ru",
+      "url": "https://cabinet.kvado.ru",
+      "tier": "fill",
+      "scan": "usable: login form",
+      "title": "Личный кабинет КВАДО",
+      "inputs": 6,
+      "textish": 4,
+      "passwords": 1,
+      "challenge": [
+        "recaptcha"
+      ],
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://www.gptek.spb.ru",
+      "url": "https://www.gptek.spb.ru",
+      "tier": "fill",
+      "scan": "usable: login form",
+      "title": "Официальный сайт АО \"ТЭК СПб\"",
+      "inputs": 11,
+      "textish": 2,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "Refused: current page origin (https://aotek.spb.ru) does not match the vault item's bound origin(s) (https://www.gptek.s"
+      },
+      "note": "nothing landed; entry page may not be the login form",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://online.sbis.ru",
+      "url": "https://online.sbis.ru",
+      "tier": "fill",
+      "scan": "usable: has input field",
+      "title": "Вход в личный кабинет",
+      "inputs": 2,
+      "textish": 1,
+      "passwords": 1,
+      "challenge": [
+        "recaptcha"
+      ],
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "Refused: current page origin (https://sso.saby.ru) does not match the vault item's bound origin(s) (https://online.sbis."
+      },
+      "note": "has text + password boxes and fills neither — real miss, not a verdict problem",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://my.residentid.ru",
+      "url": "https://my.residentid.ru",
+      "tier": "fill",
+      "scan": "usable: has input field",
+      "note": "nothing landed; email + text boxes found, none filled",
+      "title": "Resident ID — resident portal",
+      "inputs": 17,
+      "textish": 12,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "Refused: current page origin (https://residentid.ru) does not match the vault item's bound origin(s) (https://my.residen"
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://cab.y-plus.ru",
+      "url": "https://cab.y-plus.ru",
+      "tier": "fill",
+      "scan": "usable: login form",
+      "note": "masked phone field; fills 11 digits, verdict says failure",
+      "title": "Личный кабинет",
+      "inputs": 4,
+      "textish": 1,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "false-failure",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": true,
+        "verdict": "false-failure",
+        "landed_fields": 2,
+        "error": "The page rejected the value: the field did not hold it after it was typed key by key. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "https://accounts.google.com",
+      "url": "https://accounts.google.com",
+      "tier": "fill",
+      "scan": "usable: login form",
+      "title": "Sign in - Google Accounts",
+      "inputs": 8,
+      "textish": 1,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "saucedemo",
+      "url": "https://www.saucedemo.com/",
+      "tier": "fill",
+      "scan": "usable: login form",
+      "note": "public demo credentials; vault handles were deleted",
+      "title": "Swag Labs",
+      "inputs": 3,
+      "textish": 1,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "the-internet",
+      "url": "https://the-internet.herokuapp.com/login",
+      "tier": "fill",
+      "scan": "usable: has input field",
+      "note": "public demo credentials; vault handles were deleted",
+      "title": "The Internet",
+      "inputs": 2,
+      "textish": 1,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "antd-phone",
+      "url": "https://ant.design/components/input",
+      "tier": "fill-selection",
+      "scan": "usable: login form",
+      "note": "129 inputs, no recognisable login shape; nothing landed",
+      "title": "Input - Ant Design",
+      "inputs": 129,
+      "textish": 98,
+      "passwords": 13,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "Refused: focus moved off the target field (tag unknown, focus now on nothing) before the value could be typed. Nothing f"
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "cleave.js",
+      "url": "https://nosir.github.io/cleave.js/",
+      "tier": "fill-selection",
+      "scan": "usable: has input field",
+      "note": "mask reformats the value; 11 digits land, literal compare fails (9 runs: 1 pass, 8 false-failure)",
+      "title": "Cleave.js - Format input text content when you are typing",
+      "inputs": 11,
+      "textish": 11,
+      "fill": {
+        "runs": 9,
+        "verdicts": [
+          "pass",
+          "false-failure",
+          "false-failure",
+          "false-failure",
+          "false-failure",
+          "false-failure",
+          "false-failure",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": false,
+        "verdict": "false-failure",
+        "landed_fields": 1,
+        "error": "The page did not keep the value: 1 of 1 — 11 digits land, literal compare fails",
+        "note": "batch run 1 passed once; 6/6 manual repeats failed, so the pass was the anomaly"
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "mui-textfield",
+      "url": "https://mui.com/material-ui/react-text-field/",
+      "tier": "fill-selection",
+      "scan": "usable: has input field",
+      "note": "promoted to fill tier: selection-only, no password field. 10 / 10",
+      "title": "React Text Field component - Material UI",
+      "inputs": 93,
+      "textish": 87,
+      "passwords": 6,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "imask",
+      "url": "https://imask.js.org/",
+      "tier": "fill-selection",
+      "scan": "usable: has input field",
+      "note": "promoted to fill tier: selection-only, no password field. unreachable (iframe)",
+      "title": "Javascript Input Mask | imaskjs",
+      "inputs": 16,
+      "textish": 8,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "uksn-cabinet",
+      "url": "https://cab.uksn.ru/login",
+      "tier": "skipped",
+      "scan": "none: login form at load: phone + password + two consent boxes",
+      "note": "11 / 11 in isolation — the loss is sequencing, not the mask",
+      "title": "Личный кабинет",
+      "inputs": 4,
+      "textish": 1,
+      "passwords": 1,
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "RU:ok.ru",
+      "url": "https://ok.ru/",
+      "tier": "tape",
+      "scan": "usable: login form",
+      "title": "OK social network. Communication with friends on OK. Your meeting place with cla",
+      "inputs": 7,
+      "textish": 3,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "US:www.instacart.com",
+      "url": "https://www.instacart.com/login",
+      "tier": "skipped",
+      "scan": "none: email field on the page; no password field exists",
+      "title": "Instacart Login | Online Account Access | Instacart",
+      "inputs": 1,
+      "textish": 1,
+      "challenge": [
+        "recaptcha"
+      ],
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "EU:www.bol.com",
+      "url": "https://www.bol.com/nl/nl/login",
+      "tier": "skipped",
+      "scan": "click: stored url 404s; 'Inloggen' opens login.bol.com/wsp/login with email + password",
+      "title": "bol.com | Pagina niet gevonden!",
+      "inputs": 1,
+      "textish": 1,
+      "challenge": [
+        "recaptcha"
+      ],
+      "needs": "click",
+      "status": "fillable - yes - needs click"
+    },
+    {
+      "name": "CN:passport.jd.com",
+      "url": "https://passport.jd.com/new/login.aspx",
+      "tier": "tape",
+      "scan": "usable: has input field",
+      "title": "京东-欢迎登录",
+      "inputs": 26,
+      "textish": 4,
+      "passwords": 1,
+      "challenge": [
+        "recaptcha"
+      ],
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "note": "verdict pass, but every visible input is hidden — unproven",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "CN:login.taobao.com",
+      "url": "https://login.taobao.com/",
+      "tier": "tape",
+      "scan": "usable: has input field",
+      "title": "登录",
+      "inputs": 4,
+      "textish": 2,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "CN:passport.meituan.com",
+      "url": "https://passport.meituan.com/account/unitivelogin",
+      "tier": "tape",
+      "scan": "usable: has input field",
+      "title": "登录 | 美团网",
+      "inputs": 16,
+      "textish": 3,
+      "passwords": 1,
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "IN:www.flipkart.com",
+      "url": "https://www.flipkart.com/account/login",
+      "tier": "skipped",
+      "scan": "none: tel field on the page; login is by code",
+      "title": "Here's the amazing journey that you've had with Flipkart",
+      "inputs": 7,
+      "textish": 2,
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "BR:www.americanas.com.br",
+      "url": "https://www.americanas.com.br/",
+      "tier": "skipped",
+      "scan": "click: login link opens a dialog with an email field; the page it lands on paints blank",
+      "title": "Americanas | Black Friday 2026 com até 80% de desconto",
+      "inputs": 4,
+      "textish": 4,
+      "needs": "click",
+      "status": "fillable - yes - needs click"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/CostCo/SignIn",
+      "url": "http://127.0.0.1:8099/top_sites/CostCo/SignIn.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "verdict pass but no field gained characters — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/NewEgg/Login",
+      "url": "http://127.0.0.1:8099/top_sites/NewEgg/Login.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "verdict pass but no field gained characters — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/BestBuy/SignIn",
+      "url": "http://127.0.0.1:8099/top_sites/BestBuy/SignIn.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (mozilla)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/HomeDepot/SignIn",
+      "url": "http://127.0.0.1:8099/top_sites/HomeDepot/SignIn.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "verdict pass but no field gained characters — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/Macy_s/SignIn",
+      "url": "http://127.0.0.1:8099/top_sites/Macy_s/SignIn.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (mozilla)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/OfficeDepot/SignIn",
+      "url": "http://127.0.0.1:8099/top_sites/OfficeDepot/SignIn.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (mozilla)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/top_sites/QVC/SignIn",
+      "url": "http://127.0.0.1:8099/top_sites/QVC/SignIn.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "verdict pass but no field gained characters — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/heuristics/parseable_test",
+      "url": "http://127.0.0.1:8099/heuristics/parseable_test.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "verdict pass but no field gained characters — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/heuristics/priority_test",
+      "url": "http://127.0.0.1:8099/heuristics/priority_test.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "verdict pass but no field gained characters — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:mozilla/relay/relay_registration_form",
+      "url": "http://127.0.0.1:8099/relay/relay_registration_form.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (mozilla)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/e2e/login",
+      "url": "https://privacy-test-pages.site/autofill/e2e/login.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/e2e/registration",
+      "url": "https://privacy-test-pages.site/autofill/e2e/registration.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/e2e/change-password",
+      "url": "https://privacy-test-pages.site/autofill/e2e/change-password.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "fill found no login form fields on the page",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "No login form fields were found on the current page."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/form-submission",
+      "url": "https://privacy-test-pages.site/autofill/form-submission.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/signup",
+      "url": "https://privacy-test-pages.site/autofill/signup.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/password-update",
+      "url": "https://privacy-test-pages.site/autofill/password-update.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/autoprompt/1-standard-login-form",
+      "url": "https://privacy-test-pages.site/autofill/autoprompt/1-standard-login-form.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/autoprompt/2-form-in-modal",
+      "url": "https://privacy-test-pages.site/autofill/autoprompt/2-form-in-modal.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "fill found no login form fields on the page",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "No login form fields were found on the current page."
+      },
+      "needs": "click",
+      "status": "fillable - yes - needs click"
+    },
+    {
+      "name": "fixture:ddg/autofill/autoprompt/3-multistep-form",
+      "url": "https://privacy-test-pages.site/autofill/autoprompt/3-multistep-form.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/shadow-dom",
+      "url": "https://privacy-test-pages.site/autofill/shadow-dom.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "fill found no login form fields on the page",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "No login form fields were found on the current page."
+      },
+      "needs": "click",
+      "status": "fillable - yes - needs click"
+    },
+    {
+      "name": "fixture:ddg/autofill/partialFormSaves/multistep-login",
+      "url": "https://privacy-test-pages.site/autofill/partialFormSaves/multistep-login.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:ddg/autofill/partialFormSaves/password-reset-flow",
+      "url": "https://privacy-test-pages.site/autofill/partialFormSaves/password-reset-flow.html",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (ddg)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/create/create-account-ambiguous",
+      "url": "http://127.0.0.1:8098/forms/create/create-account-ambiguous/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/create/create-account-extended-spec",
+      "url": "http://127.0.0.1:8098/forms/create/create-account-extended-spec/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/create/create-account-extended",
+      "url": "http://127.0.0.1:8098/forms/create/create-account-extended/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/create/create-account-passwordrules",
+      "url": "http://127.0.0.1:8098/forms/create/create-account-passwordrules/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/create/create-account-security-questions",
+      "url": "http://127.0.0.1:8098/forms/create/create-account-security-questions/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/create/create-account",
+      "url": "http://127.0.0.1:8098/forms/create/create-account/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/autocomplete-off",
+      "url": "http://127.0.0.1:8098/forms/login/autocomplete-off/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/bare-inputs-login",
+      "url": "http://127.0.0.1:8098/forms/login/bare-inputs-login/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/input-constraints-login",
+      "url": "http://127.0.0.1:8098/forms/login/input-constraints-login/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/input-event-trust-login",
+      "url": "http://127.0.0.1:8098/forms/login/input-event-trust-login/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "page tests untrusted input events; value lands, verdict says it did not",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "false-failure",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": true,
+        "verdict": "false-failure",
+        "landed_fields": 1,
+        "error": "The page did not keep the value: 1 of 2 field(s) reverted or were re-rendered. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/login-honeypot",
+      "url": "http://127.0.0.1:8098/forms/login/login-honeypot/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/login-security-questions",
+      "url": "http://127.0.0.1:8098/forms/login/login-security-questions/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/security-code-device",
+      "url": "http://127.0.0.1:8098/forms/login/security-code-device/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/shadow-root-inputs",
+      "url": "http://127.0.0.1:8098/forms/login/shadow-root-inputs/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "pass, but our probe cannot see inside the shadow root — unproven",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 0,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/simple-spec",
+      "url": "http://127.0.0.1:8098/forms/login/simple-spec/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/simple",
+      "url": "http://127.0.0.1:8098/forms/login/simple/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/login/top-layer-popover",
+      "url": "http://127.0.0.1:8098/forms/login/top-layer-popover/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/multi-step/change-password",
+      "url": "http://127.0.0.1:8098/forms/multi-step/change-password/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/search/typeless-search",
+      "url": "http://127.0.0.1:8098/forms/search/typeless-search/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "search page, filled anyway — origin guard only",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/subscribe/newsletter-alongside-login",
+      "url": "http://127.0.0.1:8098/forms/subscribe/newsletter-alongside-login/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/update/update-email-spec",
+      "url": "http://127.0.0.1:8098/forms/update/update-email-spec/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/update/update-email",
+      "url": "http://127.0.0.1:8098/forms/update/update-email/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/update/update-password-no-current",
+      "url": "http://127.0.0.1:8098/forms/update/update-password-no-current/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "password change with no current-password field is not seen as a login form",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "No login form fields were found on the current page."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/forms/update/update-password",
+      "url": "http://127.0.0.1:8098/forms/update/update-password/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/login-page-bare",
+      "url": "http://127.0.0.1:8098/login-page-bare/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "fixture:bitwarden/scenarios/security/clickjacking-top-layer",
+      "url": "http://127.0.0.1:8098/scenarios/security/clickjacking-top-layer/",
+      "tier": "fixture-live",
+      "scan": "usable: login form",
+      "note": "published autofill fixture (bitwarden test-the-web)",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 2,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "maskdemo/intl-tel-input",
+      "url": "https://intl-tel-input.com/",
+      "tier": "fill-selection",
+      "scan": "usable: phone field",
+      "note": "class A, flaky: 2 of 3 runs fail with 13 chars / 10 digits landed",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": false,
+        "verdict": "flaky: fail/false-failure/false-failure",
+        "landed_fields": 1,
+        "error": "The page rejected the value: the field did not hold it after it was typed key by key. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "maskdemo/intl-tel-input-example",
+      "url": "https://intl-tel-input.com/examples/",
+      "tier": "fill-selection",
+      "scan": "usable: phone field",
+      "note": "class A: tel 13 chars / 10 digits land, verdict fails — same string-compare cause",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "false-failure",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": true,
+        "verdict": "false-failure",
+        "landed_fields": 1,
+        "error": "The page rejected the value: the field did not hold it after it was typed key by key. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "maskdemo/react-input-mask",
+      "url": "https://sanniassin.github.io/react-input-mask/demo.html",
+      "tier": "fill-selection",
+      "scan": "usable: phone field",
+      "note": "class A: two tel fields, 13/9 and 10/8 digits land, verdict fails",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "false-failure",
+          "false-failure",
+          "false-failure"
+        ],
+        "stable": true,
+        "verdict": "false-failure",
+        "landed_fields": 1,
+        "error": "The page rejected the value: the field did not hold it after it was typed key by key. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "maskdemo/text-mask",
+      "url": "https://text-mask.github.io/text-mask/",
+      "tier": "fill-selection",
+      "scan": "usable: phone field",
+      "note": "no login form fields; documentation page",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        "stable": true,
+        "verdict": "fail",
+        "landed_fields": 0,
+        "error": "No login form fields were found on the current page."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "maskdemo/react-phone-number-input",
+      "url": "https://catamphetamine.github.io/react-phone-number-input/",
+      "tier": "fill-selection",
+      "scan": "usable: phone field",
+      "note": "passes, 16 chars / 11 digits — mask survives",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "maskdemo/jquery-mask-plugin",
+      "url": "https://igorescobar.github.io/jQuery-Mask-Plugin/",
+      "tier": "fill-selection",
+      "scan": "usable: phone field",
+      "note": "flaky: pass then fail, nothing landed — different class, not a mask false-failure",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "fail",
+          "fail"
+        ],
+        "stable": false,
+        "verdict": "flaky: pass/fail/fail",
+        "landed_fields": 0,
+        "error": "The page rejected the value: the field did not hold it after it was typed key by key. Nothing is filled."
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/primevue-inputmask",
+      "url": "https://primevue.org/inputmask/",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/element-plus-input",
+      "url": "https://element-plus.org/en-US/component/input.html",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/quasar-input",
+      "url": "https://quasar.dev/vue-components/input",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/flowbite-phone",
+      "url": "https://flowbite.com/docs/forms/phone-input/",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/angular-material-form-field",
+      "url": "https://material.angular.io/components/form-field/overview",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/bolt-eu",
+      "url": "https://bolt.eu/en/login/",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "click",
+      "status": "fillable - yes - needs click"
+    },
+    {
+      "name": "modern/wolt",
+      "url": "https://wolt.com/en/login",
+      "tier": "fill-selection",
+      "scan": "pending",
+      "note": "modern mask surface, class A hunt",
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/megafon",
+      "url": "https://lk.megafon.ru/",
+      "tier": "fill-selection",
+      "scan": "usable: login form",
+      "note": "pass 3/3 with 11 digits — modern control, mask formats on blur",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/antd-pro",
+      "url": "https://preview.pro.ant.design/user/login",
+      "tier": "fill-selection",
+      "scan": "usable: login form",
+      "note": "pass 3/3 with 11 digits — modern control, mask formats on blur",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/vkusvill",
+      "url": "https://vkusvill.ru/",
+      "tier": "fill-selection",
+      "scan": "usable: login form",
+      "note": "mask library present, no password box on load",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    },
+    {
+      "name": "modern/mos",
+      "url": "https://mos.ru/",
+      "tier": "fill-selection",
+      "scan": "usable: login form",
+      "note": "four text inputs, no password box on load",
+      "fill": {
+        "runs": 3,
+        "verdicts": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "stable": true,
+        "verdict": "pass",
+        "landed_fields": 1,
+        "error": ""
+      },
+      "needs": "none",
+      "status": "fillable - yes"
+    }
+  ]
+}

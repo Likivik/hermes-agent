@@ -1,12 +1,13 @@
 name: Vault masks e2e
 
-# Runs the one eval that pins down the three fill behaviours the site matrix found. It lives as its
-# own workflow because CI's suite discovers tests/ only and never runs evals/, and because it drives
-# a real browser.
+# Runs the evals that pin down the fill behaviours the site list found. They live as their own
+# workflow because CI's suite discovers tests/ only and never runs evals/, and because they drive a
+# real browser. The lists under evals/vault_fill_sites/ are the checked-by-hand record those evals
+# are generated from.
 #
 # The trigger is a push to this branch and not workflow_dispatch: GitHub only dispatches a workflow
 # that exists on the default branch, and this one is meant to stay off it. A push trigger is read
-# from the pushed ref, so the branch carries its own test.
+# from the pushed ref, so the branch carries its own tests.
 
 on:
   workflow_dispatch:
@@ -26,7 +27,12 @@ jobs:
         with:
           test-environment: 'true'
 
-      - name: Run the masks eval
+      - name: The three fill behaviours
         env:
           HERMES_E2E_BROWSER: '1'
         run: '"$HERMES_PYTHON" evals/vault_fill_masks_e2e.py'
+
+      - name: The classes the site list contains
+        env:
+          HERMES_E2E_BROWSER: '1'
+        run: '"$HERMES_PYTHON" evals/vault_fill_list_classes.py'
