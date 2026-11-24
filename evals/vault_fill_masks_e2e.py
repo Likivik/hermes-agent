@@ -62,6 +62,20 @@ PAGES = {
   const el = document.getElementById('phone');
   el.addEventListener('input', () => { el.value = el.value.replace(/\\D/g, '').slice(0, 9); });
 </script>""",
+    # the same mask family, but the vault value fits: 11 digits where 11 are allowed, and 9 where 9
+    # are enough. Only the first case is a limit; these two must simply fill.
+    "/mask-exact": b"""<!doctype html><title>mask-exact</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
+<script>
+  const el = document.getElementById('phone');
+  el.addEventListener('input', () => { el.value = el.value.replace(/\\D/g, '').slice(0, 11); });
+</script>""",
+    "/mask-short": b"""<!doctype html><title>mask-short</title>
+<form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
+<script>
+  const el = document.getElementById('phone');
+  el.addEventListener('input', () => { el.value = el.value.replace(/\\D/g, '').slice(0, 11); });
+</script>""",
 }
 TASK = "vault-masks-e2e"
 
@@ -137,6 +151,10 @@ def main() -> int:
                                                         "password": PASSWORD}, origin=origins["/stateful"])
         phone = store.add_item("login", "mask", {"identifier_type": "phone", "identifier": PHONE,
                                                  "password": PASSWORD}, origin=origins["/mask"])
+        exact = store.add_item("login", "mask-exact", {"identifier_type": "phone", "identifier": PHONE,
+                                                       "password": PASSWORD}, origin=origins["/mask-exact"])
+        short = store.add_item("login", "mask-short", {"identifier_type": "phone", "identifier": "79991234",
+                                                       "password": PASSWORD}, origin=origins["/mask-short"])
 
         # /plain - the control
         raw = bvt.browser_vault_fill(login.id, task_id=TASK)
@@ -176,6 +194,18 @@ def main() -> int:
         dom = sup.evaluate_runtime(_values(["phone"]))
         assert dom["result"] == PHONE[:9], dom                 # exactly what the mask allowed
         print("mask: kept 9 of 11 named in the message; the field holds the 9 the mask allows")
+
+        # the same mask family where the vault value FITS. Only a vault value longer than the field
+        # is a limit; a value that fits exactly, or is shorter, must simply fill.
+        for label, item, value in (("mask-exact", exact, PHONE), ("mask-short", short, "79991234")):
+            inserted.clear()
+            out = json.loads(bvt.browser_vault_fill(item.id, task_id=TASK))
+            assert out["success"] and out["filled_fields"] == 2, f"{label}: {out}"
+            sup.focus_page(origins["/" + label], accept=bvt._TAB_PROBES["login"])
+            dom = sup.evaluate_runtime("document.querySelector('[name=phone]').value")
+            digits = "".join(c for c in (dom.get("result") or "") if c.isdigit())
+            assert digits == value, f"{label}: {digits!r} != {value!r}"
+            print(f"{label}: {len(value)} digits into a field that takes 11 - filled in full")
 
         from agent import redact
         redact.clear_vault_redaction_values()
