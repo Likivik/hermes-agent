@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- An account creation form: email + "Password" + "Password Confirmation", submit "Sign up". No
+     autocomplete marks anywhere, which is the hard case - the page only says what it is by its
+     labels and its second password box.
+     The rule this page pins: a page that SETS a password never receives the saved one. Chromium
+     gives every password box a role and fills only current-password
+     (components/password_manager form_parser.cc); Firefox refuses a form with a second password box
+     and refuses on the label alone - test_autocomplete_password_generation.html, whose form 3 has
+     no autocomplete attribute at all.
+     Found on: test-the-web forms/create/create-account-ambiguous, DDG
+     privacy-test-pages/autofill/autoprompt/0-standard-signup-form. -->
+<title>signup-overwrite</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "email",
+ "identifier": "a@b.c",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 1,
+  "values": {
+   "email": "a@b.c"
+  },
+  "password_untouched": true
+ }
+}
+</script>
+<form>
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email">
+  <label for="password">Password</label>
+  <input id="password" name="password" type="password" passwordrules="minlength: 5; maxlength: 10">
+  <label for="password-2">Password Confirmation</label>
+  <input id="password-2" name="password-2" type="password">
+  <button type="submit">Sign up</button>
+</form>

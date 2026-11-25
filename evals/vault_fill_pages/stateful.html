@@ -11,6 +11,22 @@
      exactly that. Typed text does not pass through the setter at all, so a human - or
      Input.insertText - still lands. -->
 <title>stateful</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "email",
+ "identifier": "a@b.c",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "values": {
+   "email": "a@b.c",
+   "pw": "$PASSWORD"
+  },
+  "trusted_inserts": 1
+ }
+}
+</script>
 <form><input id=email name=email type=email><input id=pw name=pw type=password></form>
 <script>
   const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');

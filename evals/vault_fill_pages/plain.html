@@ -3,4 +3,19 @@
      password goes by the guarded JS write, both land and hold. Every other page in this directory
      is this page plus one real-world complication we met on a live site. -->
 <title>plain</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "email",
+ "identifier": "a@b.c",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "values": {
+   "email": "a@b.c",
+   "pw": "$PASSWORD"
+  }
+ }
+}
+</script>
 <form><input name=email type=email autocomplete=username><input name=pw type=password autocomplete=current-password></form>

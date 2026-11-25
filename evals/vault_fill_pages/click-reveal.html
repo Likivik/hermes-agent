@@ -4,6 +4,18 @@
      appears late, not that the fill clicks.
      Found on: EU:www.bol.com, BR:www.americanas.com.br, and the ddg autoprompt fixtures. -->
 <title>click-reveal</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234567",
+ "reveal": "#go",
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "digits": "79991234567"
+ }
+}
+</script>
 <button id=go type=button>Log in</button>
 <script>
   document.getElementById('go').addEventListener('click', () => {

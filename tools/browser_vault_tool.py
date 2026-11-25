@@ -1172,6 +1172,7 @@ def _fill_bound_page(backend: Any, handle: str, meta: Any, page_origin: str, eff
         build_inspection_js,
         classify_checkout_control,
         classify_login_control,
+        is_creation_password_form,
         select_checkout_fills,
         select_password_fill,
     )
@@ -1208,10 +1209,22 @@ def _fill_bound_page(backend: Any, handle: str, meta: Any, page_origin: str, eff
 
     # ── Resolve secret and fill (secret never enters any logged string) ─────
     identifier_fill: list[dict[str, Any]] = []
+    password_skipped: str | None = None
     try:
         if meta.kind == "login":
             secret = {"password": backend.resolve_password(handle)}
-            fills = select_password_fill(classified, secret["password"])
+            # A page that is creating a password never receives the saved one: Chromium gives each
+            # box a role and fills only the current-password one, Firefox refuses a second box.
+            controls_all = [LoginControl.from_dict(r) for r in raw_controls if isinstance(r, dict)]
+            password_skipped = None
+            if is_creation_password_form(controls_all):
+                fills = []
+                password_skipped = (
+                    "this page sets a password (a signup or a change), so the saved password was "
+                    "left alone"
+                )
+            else:
+                fills = select_password_fill(classified, secret["password"])
             if with_identifier:
                 identifier_fill = _identifier_fill(classified, raw_controls, fills, str(meta.identifier or ""),
                                                    meta.identifier_type)
@@ -1279,6 +1292,9 @@ def _fill_bound_page(backend: Any, handle: str, meta: Any, page_origin: str, eff
         # The read-back passed, so every targeted field holds its value: the identifier was filled
         # exactly when one was targeted.
         out["identifier_filled"] = bool(identifier_fill)
+        if password_skipped:
+            # Say it plainly: the page sets a password, so the saved one was never typed.
+            out["password_skipped"] = password_skipped
         out["next"] = _login_next(meta, identifier_filled=bool(identifier_fill))
     if meta.kind != "login":
         out["fields"] = sorted(f["token"] for f in fills)  # which controls were targeted, never the values

@@ -5,6 +5,21 @@
      a guess the fill refuses to make.
      Found on: the react-input-mask demo page, whose form carries two tel inputs. -->
 <title>mask-two-tel</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234567",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "tel_values": [
+   "79991234567",
+   ""
+  ]
+ }
+}
+</script>
 <form><input id=phone name=phone type=tel autocomplete=tel><input name=phone2 type=tel><input name=pw type=password></form>
 <script>
   for (const el of document.querySelectorAll('[type=tel]')) {

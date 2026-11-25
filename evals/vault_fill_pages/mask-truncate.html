@@ -6,6 +6,22 @@
      the jQuery-Mask-Plugin demo (kept 8 of 11), intl-tel-input (kept 9 of 11 - this page's exact
      shape). The message reads "The field kept 9 of the 11 digits of the stored value." -->
 <title>mask-truncate</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234567",
+ "reveal": null,
+ "expect": {
+  "result": "limit",
+  "message_contains": [
+   "9",
+   "11"
+  ],
+  "digits": "799912345",
+  "password_inserted": false
+ }
+}
+</script>
 <form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
 <script>
   // keeps only the first 9 digits

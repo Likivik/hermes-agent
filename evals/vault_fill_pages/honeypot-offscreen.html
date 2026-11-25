@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- A honeypot hidden the way the trade recommends, not the easy way: the trap sits off the canvas
+     with position:absolute; left:-9999px; width:1px; height:1px; opacity:0, and one more is
+     transparent but laid out normally. `display:none` is what naive bots skip, so real
+     implementations moved to these techniques instead.
+     What it checks: a filler that writes into every input it can find, rather than into what a
+     person could see and touch. A filled trap marks the submission as automated.
+     The rule this page pins: a field with no box on screen, or a transparent one, is never a fill
+     target - the real email and password are, and the traps must stay empty.
+     Found on: Formspring's documented honeypot pattern, and the ACSAC'24 "Leaky Autofill" study
+     (30 password managers, 15 concealment techniques; two in three fill off-screen or clipped
+     fields, every one of them fills clip-path and content-visibility with passwords). -->
+<title>honeypot-offscreen</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "email",
+ "identifier": "a@b.c",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "values": {
+   "email": "a@b.c",
+   "pw": "$PASSWORD"
+  },
+  "traps_untouched": ["off_canvas_email", "transparent_email"]
+ }
+}
+</script>
+<form>
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" autocomplete="username">
+  <label for="pw">Password</label>
+  <input id="pw" name="pw" type="password" autocomplete="current-password">
+  <input id="off_canvas_email" name="off_canvas_email" type="text" autocomplete="off"
+         style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+  <input id="transparent_email" name="transparent_email" type="text"
+         style="opacity:0;position:absolute;left:0;top:0;width:200px;height:20px">
+  <button type="submit">Log in</button>
+</form>

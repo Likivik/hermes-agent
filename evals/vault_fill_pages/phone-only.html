@@ -6,4 +6,18 @@
      is the whole fill") and a type=tel input classifies at score 85 with no marks at all.
      Found on: no site - this page exists to answer the question "does it, though?" -->
 <title>phone-only</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234567",
+ "reveal": null,
+ "expect": {
+  "result": "either",
+  "filled_fields": 1,
+  "values": {
+   "phone": "79991234567"
+  }
+ }
+}
+</script>
 <form><input id=phone name=phone type=tel autocomplete=tel></form>

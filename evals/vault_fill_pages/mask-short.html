@@ -2,6 +2,18 @@
 <!-- The vault value SHORTER than the field: 8 digits where 11 fit. The other side of the length
      axis from mask-exact - a value with room to spare must simply fill. -->
 <title>mask-short</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "digits": "79991234"
+ }
+}
+</script>
 <form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
 <script>
   const el = document.getElementById('phone');

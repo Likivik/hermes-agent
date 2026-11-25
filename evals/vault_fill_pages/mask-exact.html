@@ -4,6 +4,18 @@
      value LONGER than the field can hold is a limit; a value that fits, exactly or with room to
      spare, is an ordinary fill and must be reported as nothing else. -->
 <title>mask-exact</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234567",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "digits": "79991234567"
+ }
+}
+</script>
 <form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
 <script>
   const el = document.getElementById('phone');

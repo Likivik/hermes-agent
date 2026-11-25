@@ -50,7 +50,28 @@ _CHECKOUT_HEURISTICS = (
 
 _EXCLUDED_AUTOCOMPLETE = {"new-password", "one-time-code"}
 
-_RE_EXCLUDED_PASSWORD = re.compile(r"\b(?:new|confirm|create|repeat)\s*password\b")
+# A password box that is being SET, not checked: "new password", "confirm password",
+# "Password Confirmation", "re-enter password". Firefox's own fixture proves the label alone is
+# enough (test_autocomplete_password_generation.html, form 3 has no autocomplete attribute), and
+# it matches in either word order - "Password Confirmation" is how real signup pages write it.
+_RE_EXCLUDED_PASSWORD = re.compile(
+    r"\b(?:(?:new|confirm|create|repeat|re-?enter|verify|retype)\s*password"
+    r"|password\s*(?:confirmation|confirm|again|repeat))\b"
+)
+
+
+def is_creation_password_form(controls: list["LoginControl"]) -> bool:
+    """True when the page is creating or changing a password, not accepting a saved login.
+
+    Chromium gives each password box a role (current / new / confirmation) and never writes a saved
+    credential into a new one; Firefox refuses a form with a second password box. The signal here is
+    the same: two or more password boxes and not one of them declared ``current-password``.
+    """
+    boxes = [c for c in controls if c.type == "password"]
+    if len(boxes) < 2:
+        return False
+    return not any("current-password" in c.autocomplete.lower().split() for c in boxes)
+
 _RE_EMAIL = re.compile(r"\b(?:e[\s-]?mail|email address)\b")
 _RE_TEL = re.compile(r"\b(?:phone|telephone|mobile)\b")
 _RE_USERNAME = re.compile(
@@ -280,6 +301,25 @@ _LOGIN_CONTROL_INSPECTION_JS_TEMPLATE = """(() => {
     if (["hidden", "submit", "button", "reset", "file", "image", "checkbox", "radio"].includes(element.type)) return [];
     const style = getComputedStyle(element);
     if (style.display === "none" || style.visibility === "hidden" || element.getClientRects().length === 0) return [];
+    // A field a human cannot see is not a fill target. Bots and lazily written fillers write into
+    // hidden inputs; sites use that to detect automation (a "honeypot"). One in five password
+    // managers still fill a display:none field, two in three fill the other concealment techniques
+    // (ACSAC'24 "Leaky Autofill": 30 managers, 15 techniques, login forms worst at 65.7%), so the
+    // check is deliberately wider than the three obvious cases.
+    try {
+      if (element.checkVisibility && !element.checkVisibility({
+        checkOpacity: true, opacityProperty: true, checkVisibilityCSS: true,
+        contentVisibilityAuto: true, visibilityProperty: true,
+      })) return [];
+    } catch (err) { /* older engine: the manual checks below still run */ }
+    const box = element.getBoundingClientRect ? element.getBoundingClientRect() : null;
+    if (box) {
+      if (box.width < 4 || box.height < 4) return [];                 // shrunk to nothing
+      if (box.right < 0 || box.bottom < 0 || box.left > innerWidth) return [];  // off the canvas
+    }
+    if (style.opacity === "0") return [];                            // transparent
+    if (style.clipPath && style.clipPath !== "none") return [];      // clipped away
+    if (style.contentVisibility === "hidden") return [];
     const labels = element.labels ? Array.from(element.labels, (l) => l.textContent || "") : [];
     const ariaText = (element.getAttribute("aria-labelledby") || "")
       .split(/\\s+/).filter(Boolean)

@@ -2,6 +2,8 @@ name: Vault fill fixtures e2e
 
 # Runs the one eval that pins down every fill behaviour we found on real sites, as checked-in
 # pages under evals/vault_fill_pages/ - offline, deterministic, no fixture checkout, no list.
+# Each page declares its own contract (reveal selector + expected end state) in a
+# <script id="fill-contract"> block; the eval is one generic driver over those declarations.
 # It lives as its own workflow because CI's suite discovers tests/ only and never runs evals/,
 # and because it drives a real browser. Where each page came from is written in the HTML
 # comment inside the page itself; the 124-row list that produced them is in git history.
@@ -28,7 +30,7 @@ jobs:
         with:
           test-environment: 'true'
 
-      - name: The nine fill behaviours
+      - name: Every fill behaviour, each page declaring its own end state
         env:
           HERMES_E2E_BROWSER: '1'
         run: '"$HERMES_PYTHON" evals/vault_fill_fixtures_e2e.py'

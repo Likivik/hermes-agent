@@ -6,4 +6,19 @@
      Found on: test-the-web forms/login/nested-iframe-login - and real sites that embed their
      login as a widget served from the same origin. -->
 <title>iframe-same-origin</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "email",
+ "identifier": "a@b.c",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "frame_values": {
+   "email": "a@b.c",
+   "pw": "$PASSWORD"
+  }
+ }
+}
+</script>
 <iframe src="/parts/iframe-login-child" style="width:340px;height:90px"></iframe>

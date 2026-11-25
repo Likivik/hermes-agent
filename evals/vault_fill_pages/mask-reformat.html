@@ -5,6 +5,18 @@
      country-code form of it on https://cab.uksn.ru (a +7 prefix is punctuation to the fill, not
      a wrong number). -->
 <title>mask-reformat</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "phone",
+ "identifier": "79991234567",
+ "reveal": null,
+ "expect": {
+  "result": "filled",
+  "filled_fields": 2,
+  "digits": "79991234567"
+ }
+}
+</script>
 <form><input id=phone name=phone type=tel autocomplete=tel><input name=pw type=password></form>
 <script>
   const el = document.getElementById('phone');

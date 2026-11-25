@@ -8,6 +8,18 @@
      cross-origin. Found on: nothing yet - this is the guard that must hold before it is ever
      needed. -->
 <title>iframe-cross-origin</title>
+<script type="application/json" id="fill-contract">
+{
+ "identifier_type": "email",
+ "identifier": "a@b.c",
+ "reveal": null,
+ "expect": {
+  "result": "refused",
+  "error_contains": "No login form fields",
+  "child_touched": 0
+ }
+}
+</script>
 <iframe src="http://127.0.0.1:8477/parts/iframe-login-child" style="width:340px;height:90px"></iframe>
 <script>
   window.__childTouched = 0;
